@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema
 
 
-const userSchema = Schema({
+const userSchema = new Schema({
     name:{
         type: String,
         require :true
@@ -20,6 +20,7 @@ const userSchema = Schema({
     password :{
         type:String, 
         require:true,
+        select : false,
     }
 })
 
