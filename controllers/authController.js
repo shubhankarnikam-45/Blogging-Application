@@ -49,7 +49,7 @@ const registrationController = async (req, res) => {
 //login controller.
 const loginController = async (req, res) => {
     // console.log(clc.yellowBright("login is successfull..."));
-
+    console.log(req.session)
     // console.log("body",req.body);
     //destructuring.
     const { loginId, password } = req.body;
@@ -86,6 +86,10 @@ const loginController = async (req, res) => {
                     message: "password is wrong"
                 })
             }
+
+        //initialize the session.
+        req.session.isAuth = true;
+        req.session.user = returnedMessage;
 
         return res.send({
             status: 200,

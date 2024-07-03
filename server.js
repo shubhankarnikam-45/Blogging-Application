@@ -2,6 +2,13 @@ const express = require("express");
 require("dotenv").config();
 const app = express();
 const clc = require("cli-color")
+const session = require("express-session");
+const mongodbSession = require("connect-mongodb-session")(session);
+
+const store = new mongodbSession({
+    uri: process.env.MONGO_URI,
+    collection: 'blogSessions'
+})
 
 //database start.
 require("./db")
@@ -15,9 +22,19 @@ const PORT = process.env.PORT;
 app.use(express.json());
 app.use(express.urlencoded())
 
-app.use("/auth",authRouter)
+
+//middleware for the session.
+app.use(session({
+    secret: process.env.SECRET,
+    store: store,
+    resave: false,
+    saveUninitialized: false
+}))
+
+app.use("/auth", authRouter)
 
 
-app.listen(PORT,()=>{
+
+app.listen(PORT, () => {
     console.log(clc.bgBlueBright(`server is running on port ${PORT}`))
 })
