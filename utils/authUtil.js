@@ -1,8 +1,9 @@
+const clc = require("cli-color");
 
 //regex
 function isEmailAddress(str) {
     var pattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
-    if(str.match(pattern))
+    if (str.match(pattern))
         return true;
     return false;
 }
@@ -54,4 +55,28 @@ function registrationPageValidation({ name, email, username, password }) {
     })
 }
 
-module.exports = {registrationPageValidation}
+
+function loginPageValidation({ loginId, password }) {
+    return new Promise((resolve, reject) => {
+
+        // console.log(clc.magentaBright("in data validation for login", loginId, password))
+        if (!loginId) {
+            reject("loginId is missing.")
+        }
+
+        if (!password) {
+            reject("password is missing.")
+        }
+
+        if (typeof (loginId) !== 'string') {
+            reject("loginId is not in string format")
+        }
+
+        if (typeof (password) !== 'string') {
+            reject("password is not in string format")
+        }
+        resolve("Data validation is successfull, all data is valid go ahead...")
+    })
+}
+
+module.exports = { registrationPageValidation , loginPageValidation}

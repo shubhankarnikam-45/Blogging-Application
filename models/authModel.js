@@ -60,6 +60,34 @@ const UserModel = class {
             }
         })
     }
+
+    static loginUser({ loginId}) {
+
+        return new Promise(async (resolve, reject) => {
+            // console.log(clc.magentaBright("in login user model ", loginId))
+            try {
+                //we have to check the loginId is present in the database of nor.
+                const isLoginIdExists = await userSchema.findOne({
+                    $or: [{ email: loginId }, { username: loginId }]
+                }).select("+password")
+
+                // console.log(" is user exists ", isLoginIdExists)
+
+                //if user not exits with current loginId.
+                if (!isLoginIdExists) {
+                    reject("user does't exists");
+                }
+
+
+                resolve(isLoginIdExists)
+            } catch (error) {
+                reject(error)
+            }
+
+
+        })
+
+    }
 }
 
 module.exports = UserModel;
