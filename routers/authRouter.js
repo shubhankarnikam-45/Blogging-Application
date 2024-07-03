@@ -4,9 +4,11 @@ const express = require("express");
 const authRouter = express.Router();
 
 //file import.
-const { registrationController, loginController, logoutController } = require("../controllers/authController");
+const { registrationController, loginController, logoutController ,loginFormController} = require("../controllers/authController");
 const isAuth = require("../middlewares/isAuthMiddleware");
 
+//login page (get request)
+authRouter.get("/login", loginFormController)
 //registration
 authRouter.post("/register", registrationController)
 

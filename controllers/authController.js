@@ -126,7 +126,11 @@ const logoutController = (req, res)=>{
     })
 }
 
+const loginFormController = (req, res)=>{
+    return res.render("loginForm")
+}
 
 
 
-module.exports = { registrationController, loginController, logoutController }
+
+module.exports = { registrationController, loginController, logoutController ,loginFormController}
