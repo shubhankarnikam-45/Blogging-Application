@@ -89,7 +89,11 @@ const loginController = async (req, res) => {
 
         //initialize the session.
         req.session.isAuth = true;
-        req.session.user = returnedMessage;
+        req.session.user = {
+            username : returnedMessage.username,
+            email : returnedMessage.email,
+            userId : returnedMessage._id
+        };
 
         return res.send({
             status: 200,
