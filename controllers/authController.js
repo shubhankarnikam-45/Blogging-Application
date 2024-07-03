@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs")
 const { registrationPageValidation, loginPageValidation } = require("../utils/authUtil");
 const UserModel = require("../models/authModel");
 const { rawListeners } = require("../schemas/userSchema");
+const sessionSchema = require("../schemas/sessionSchema");
 
 //registration controller.
 const registrationController = async (req, res) => {
@@ -69,7 +70,7 @@ const loginController = async (req, res) => {
 
     //now this below line interact with database.
     try {
-        const returnedMessage = await UserModel.loginUser({ loginId})
+        const returnedMessage = await UserModel.loginUser({ loginId })
 
         // console.log("returend message ", returnedMessage)
         //compare password.using bcryptjs.
@@ -80,20 +81,19 @@ const loginController = async (req, res) => {
         // console.log("is match ", isPaswordMatch)
 
         //if password not match.
-        if(!isPaswordMatch)
-            {
-                return res.send({
-                    status : 400,
-                    message: "password is wrong"
-                })
-            }
+        if (!isPaswordMatch) {
+            return res.send({
+                status: 400,
+                message: "password is wrong"
+            })
+        }
 
         //initialize the session.
         req.session.isAuth = true;
         req.session.user = {
-            username : returnedMessage.username,
-            email : returnedMessage.email,
-            userId : returnedMessage._id
+            username: returnedMessage.username,
+            email: returnedMessage.email,
+            userId: returnedMessage._id
         };
 
         return res.send({
@@ -103,34 +103,66 @@ const loginController = async (req, res) => {
     } catch (error) {
         return res.send({
             status: 500,
-            message : "internal server error",
+            message: "internal server error",
             error: error
         })
     }
 }
 
 //logout controller.
-const logoutController = (req, res)=>{
-    req.session.destroy((err)=>{
-        if(err)
-            {
-                return res.send({
-                    status: 500,
-                    message : "not logout successfully..."
-                })
-            }
+const logoutController = (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            return res.send({
+                status: 500,
+                message: "not logout successfully..."
+            })
+        }
         return res.send({
             status: 200,
-            message : "logout successfully..."
+            message: "logout successfully..."
         })
     })
 }
 
-const loginFormController = (req, res)=>{
+//get request for the login page.
+const loginFormController = (req, res) => {
     return res.render("loginForm")
+}
+
+//logout From All Devices
+//private route.
+const logoutFromAllDevices = async (req, res) => {
+
+    // console.log(clc.magentaBright("logoutFromAllDevices"))
+    // console.log("seeson look ", req.session.user.userId)
+    const userId = req.session.user.userId;
+    console.log("user id ", userId)
+    try {
+        const deletedEntry = await sessionSchema.deleteMany({
+            "session.user.userId": userId
+        })
+
+        console.log("delted entry", deletedEntry);
+
+        return res.send({
+            status: 200,
+            message: "logout from all device successful...",
+            data: deletedEntry
+        })
+    } catch (error) {
+
+        return res.send({
+            status: 500,
+            message: "logout from all device successful...",
+            error: error
+        })
+    }
+
+
 }
 
 
 
 
-module.exports = { registrationController, loginController, logoutController ,loginFormController}
+module.exports = { registrationController, loginController, logoutController, loginFormController, logoutFromAllDevices }
