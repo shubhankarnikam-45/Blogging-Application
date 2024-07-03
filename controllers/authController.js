@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs")
 //file import.
 const { registrationPageValidation, loginPageValidation } = require("../utils/authUtil");
 const UserModel = require("../models/authModel");
+const { rawListeners } = require("../schemas/userSchema");
 
 //registration controller.
 const registrationController = async (req, res) => {
@@ -108,7 +109,24 @@ const loginController = async (req, res) => {
     }
 }
 
+//logout controller.
+const logoutController = (req, res)=>{
+    req.session.destroy((err)=>{
+        if(err)
+            {
+                return res.send({
+                    status: 500,
+                    message : "not logout successfully..."
+                })
+            }
+        return res.send({
+            status: 200,
+            message : "logout successfully..."
+        })
+    })
+}
 
 
 
-module.exports = { registrationController, loginController }
+
+module.exports = { registrationController, loginController, logoutController }
