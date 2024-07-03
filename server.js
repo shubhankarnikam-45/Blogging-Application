@@ -33,7 +33,8 @@ app.use(session({
 
 app.use("/auth", authRouter)
 
-
+//set view engine
+app.set("view engine", "ejs");
 
 app.listen(PORT, () => {
     console.log(clc.bgBlueBright(`server is running on port ${PORT}`))
